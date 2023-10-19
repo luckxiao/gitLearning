@@ -3,14 +3,16 @@ import pandas as pd
 database_name='WINDZX'
 # 读取excel文件,sheet_name=None 表示引用所有的sheet
 #df = pd.read_excel("D:\\20230515\\wind映射表.xlsx",sheet_name=[0,1])
+# 文件夹名称
+file_name='D:\\2023.10\\股票\\'
 
-df = pd.read_excel("D:\\2023.10\\股票\\股票-第一批stt-V1.xlsx",sheet_name=[1,2],skiprows=4) # skiprows 跳过前第四行，sheet_name 索引从0开始，前闭后闭
+df = pd.read_excel(file_name+"股票-第一批stt-V1.xlsx",sheet_name=[1,2],skiprows=4) # skiprows 跳过前第四行，sheet_name 索引从0开始，前闭后闭
 for sheet_num in list(df.keys()):
     #获取目标表名称
     target_table_name=df[sheet_num]['目标表名称'][1]
     source_table_name=df[sheet_num]['来源表名'][2]
     # 文件输出路径
-    output_file = "D:\\2023.10\\股票第二批\\WIND_{source_table_name}-{target_table_name}.sql"\
+    output_file = file_name+"WIND_{source_table_name}-{target_table_name}.sql"\
         .format(source_table_name=source_table_name,target_table_name=target_table_name)
     query=[]
     for index,row in df[sheet_num].iterrows():
