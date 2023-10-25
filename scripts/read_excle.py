@@ -23,8 +23,8 @@ if __name__ == '__main__':
     # 读取excel文件,sheet_name=None 表示引用所有的sheet
     #df = pd.read_excel("D:\\20230515\\wind映射表.xlsx",sheet_name=[0,1])
     # 文件夹名称
-    file_name='D:\\2023.10\\股票\\'
-    dict_data = pd.read_excel(file_name + "股票-第一批stt-V1.xlsx", sheet_name=[1],
+    file_name='D:\\2023.10\\基金\\'
+    dict_data = pd.read_excel(file_name + "基金指数行情.xlsx", sheet_name=[1],
                               skiprows=4)  # skiprows 跳过前第四行,sheet_name 索引从0开始，前闭后闭
     # sheet 的数据量
     for sheet_num in list(dict_data.keys()):
@@ -37,8 +37,8 @@ if __name__ == '__main__':
             columns_source = row[9]  # 源字段
             if (str(columns_source).lower() == 'nan'):  # 如果源为空则给null；excel空白处，默认是float类型，需转换为str
                 columns_source = "null"
-            columns_targe = row[3]  # 目标字段
-            columns_comment = row[4]  # 目标注释
+            columns_targe = row[5]  # 目标字段
+            columns_comment = row[6]  # 目标注释
             if (index == sheet_len - 1):  # 如果为最后一行，则不加逗号
                 columns_source = '\'' + str(source_table_name).upper() + '\'' + '||OBJECT_ID'  # object_id 为业务主键
                 columns_targe = 'INC_ID_S'
