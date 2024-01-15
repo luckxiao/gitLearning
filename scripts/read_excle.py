@@ -3,6 +3,7 @@
 # @question:需要封装
 
 import pandas as pd
+import os
 
 # 拼接 SQL 中间的 格式
 def read_m_data(query,columns_source,columns_targe,columns_comment,flag):
@@ -15,14 +16,16 @@ def read_m_data(query,columns_source,columns_targe,columns_comment,flag):
                      .format(columns_source=columns_source, columns_targe=str(columns_targe).strip(),
                              columns_comment=columns_comment))
 
-
 if __name__ == '__main__':
     database_name='WINDZX'
+    # database_name = 'FINCHINANEW'
+    #database_name = 'ZYYXZX'
+    source_name = 'WIND'
     # 读取excel文件,sheet_name=None 表示引用所有的sheet
     #df = pd.read_excel("D:\\20230515\\wind映射表.xlsx",sheet_name=[0,1])
     # 文件夹名称
-    file_name='D:\\2023.10\\基金\\第一批\\'
-    dict_data = pd.read_excel(file_name + "基金指数行情.xlsx", sheet_name=[1,2],
+    file_name='D:\\2024.01\\'
+    dict_data = pd.read_excel(file_name + "新增_stt.xlsx", sheet_name=[1,2,3,4,5,6],
                               skiprows=4)  # skiprows 跳过前第四行,sheet_name 索引从0开始，前闭后闭
     # sheet 的数据量
     for sheet_num in list(dict_data.keys()):
@@ -47,18 +50,23 @@ if __name__ == '__main__':
                     continue
                 else:
                     if str(columns_targe).upper() == 'SRC_ID':
-                        columns_source = '\'' + 'WIND.' + str(source_table_name).upper() + '\''
+                        columns_source = '\'' + f'{source_name}.'.format(source_name=source_name) + str(source_table_name).upper() + '\''
                         read_m_data(query,columns_source, columns_targe, columns_comment, 0)
                     elif str(columns_targe).upper() == 'DEL_FLAG':
                         columns_source = '\'' + '0' + '\''
                         read_m_data(query,columns_source, columns_targe, columns_comment, 0)
                     else:
                         read_m_data(query,columns_source, columns_targe, columns_comment, 0)
-        # 文件输出路径
-        output_file = file_name + "WIND_{source_table_name}-{target_table_name}.sql" \
-            .format(source_table_name=source_table_name, target_table_name=target_table_name)
+        # 切换到目标文件夹所在的位置
+        os.chdir(file_name)
+        # 创建子文件夹的名称
+        folder_name = 'sql'
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+        output_file = "{file_name}{folder_name}\\{source_name}_{source_table_name}-{target_table_name}.sql" \
+            .format(file_name=file_name,folder_name=folder_name,source_name=source_name,source_table_name=source_table_name, target_table_name=target_table_name)
         # 追加写入文件
-        with open(output_file, 'w') as f1:
+        with open(output_file, 'w',encoding='utf-8') as f1:
             result = '\n'.join([str(result) for result in query])
             f1.write("select \n{result} \nfrom {database_name}.{source_table_name}"
                      .format(result=result, database_name=database_name, source_table_name=source_table_name))
